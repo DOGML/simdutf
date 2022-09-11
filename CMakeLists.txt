@@ -36,6 +36,11 @@ endif(BUILD_TESTING)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES GNU AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
   message(STATUS "The benchmark tool requires GCC 8.0 or better.")
+elseif((${CMAKE_SYSTEM_NAME} MATCHES "Darwin") AND (CMAKE_SYSTEM_VERSION VERSION_LESS "19.0"))
+  # Building tools on macOS requires 10.15 to avoid this error:
+  #   ./tools/sutf.h:22:31: error: 'path' is unavailable: introduced in macOS 10.15
+  #   std::queue<std::filesystem::path> input_files;
+  message(STATUS "macOS: building tools requires macOS 10.15 (Catalina) or later" )
 else()
   add_subdirectory(tools)
 endif()
